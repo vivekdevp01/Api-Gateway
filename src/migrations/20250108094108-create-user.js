@@ -21,9 +21,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
         validate: {
-          is: [
-            "^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{8,20}$",
-          ],
+          is: {
+            args: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@\$!%*?&])[A-Za-z\d@\$!%*?&]{8,20}$/,
+            msg: "Password must contains atleast 1 upper ,lower, digit,special character requirements.",
+          },
         },
       },
       createdAt: {

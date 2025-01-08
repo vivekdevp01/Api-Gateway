@@ -1,5 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
+const bcrypt = require("bcrypt");
+const { ServerConfig } = require("../config");
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -25,9 +27,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          is: [
-            "^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{8,20}$",
-          ],
+          is: {
+            args: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@\$!%*?&])[A-Za-z\d@\$!%*?&]{8,20}$/,
+            msg: " Password must contains atleast 1 upper ,lower, digit,special character requirements.",
+          },
         },
       },
     },
@@ -36,5 +39,12 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "User",
     }
   );
+  User.beforeCreate(function encrpyt(user) {
+    const encyptedPassword = bcrypt.hashSync(
+      user.password,
+      +ServerConfig.SALT_ROUND
+    );
+    user.password = encyptedPassword;
+  });
   return User;
 };
