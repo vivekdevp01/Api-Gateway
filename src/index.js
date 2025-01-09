@@ -2,7 +2,7 @@ const express = require("express");
 
 const { ServerConfig } = require("./config");
 const apiRoutes = require("./routes");
-
+// const { Auth } = require("./utils/common");
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

@@ -52,10 +52,37 @@ async function signIn(data) {
     );
   }
 }
+async function isAuthenticated(token) {
+  try {
+    if (!token) {
+      throw new AppError("missing token", StatusCodes.BAD_REQUEST);
+    }
+    const response = Auth.verifyToken(token);
+    const user = await userRepository.get(response.id);
+    if (!user) {
+      throw new AppError("User not found", StatusCodes.UNAUTHORIZED);
+    }
+    return user.id;
+  } catch (error) {
+    if (error instanceof AppError) throw error;
+    if (error.name === "JsonWebTokenError") {
+      throw new AppError("Invalid token", StatusCodes.BAD_REQUEST);
+    }
+    if (error.name === "TokenExpiredError") {
+      throw new AppError("Token expired", StatusCodes.BAD_REQUEST);
+    }
+    console.log(error);
+    throw new AppError(
+      "Cannot authenticate the user",
+      StatusCodes.INTERNAL_SERVER_ERROR
+    );
+  }
+}
 
 module.exports = {
   createUser,
   signIn,
+  isAuthenticated,
 };
 
 //In UserController.js
