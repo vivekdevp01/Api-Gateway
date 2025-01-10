@@ -6,8 +6,8 @@ const apiRoutes = require("./routes");
 // const { Auth } = require("./utils/common");
 const app = express();
 const limiter = rateLimit({
-  windowMs: 10 * 60 * 1000, // 15 minutes
-  limit: 3, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
+  windowMs: 40 * 60 * 1000, // 15 minutes
+  limit: 6, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
 });
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -30,8 +30,10 @@ app.use(
 );
 app.use("/api", apiRoutes);
 
-app.listen(ServerConfig.PORT, () => {
+app.listen(ServerConfig.PORT, async () => {
   console.log(`Successfully started the server on PORT : ${ServerConfig.PORT}`);
+  //   user = await User.findByPk(6);
+  //   role = await Role.findByPk(1);
 });
 
 /**
